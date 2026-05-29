@@ -1,12 +1,14 @@
 # 🟦 2f-agro-backend
 
-> Backend C# .NET 8 + arquitetura SOA do 2F-AGRO.
-> Matérias: **C#** (100 pts) + **SOA** · FIAP 3ES · GS 2026.1
+> Backend C# .NET 8 do 2F-AGRO.
+> Matéria: **C# .NET** (100 pts) · FIAP 3ES · GS 2026.1
 
 [![Hub](https://img.shields.io/badge/hub-2f--agro-success)](https://github.com/GS-SPACE-CONNECT/2f-agro)
 
 ## 🎯 Objetivo
-API REST em .NET 8 que serve duas matérias ao mesmo tempo: **C#** (POO completa — abstract, herança, polimorfismo, interfaces, structs, partial, exceções) + **SOA** (microsserviços, REST, MQ, Gateway).
+API REST em .NET 8 com **POO completa** (abstract, herança, polimorfismo, interfaces, structs, partial, exceções).
+
+> ℹ️ **SOA migrou (28/05).** A matéria SOA virou implementação Java própria — agora no repo [2f-agro-soa](https://github.com/GS-SPACE-CONNECT/2f-agro-soa) (Spring Boot REST + SOAP). Este repo é só C#.
 
 ## 👥 Owners
 [@brnleao](https://github.com/brnleao), [@DevRuanVieira](https://github.com/DevRuanVieira), [@jota0802](https://github.com/jota0802) · Team [`backend`](https://github.com/orgs/GS-SPACE-CONNECT/teams/backend)
