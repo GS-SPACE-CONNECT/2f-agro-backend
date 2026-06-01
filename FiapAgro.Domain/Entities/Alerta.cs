@@ -15,6 +15,9 @@ public abstract class Alerta
     public Guid PropriedadeId { get; set; }
     public double Probabilidade { get; set; }
 
+    // Construtor sem parâmetros exigido pelo EF Core para materialização via reflexão.
+    protected Alerta() {}
+
     protected Alerta(Guid propriedadeId, double probabilidade)
     {
         Id = Guid.NewGuid();

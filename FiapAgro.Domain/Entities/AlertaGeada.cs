@@ -6,6 +6,8 @@ public class AlertaGeada : Alerta
 {
     public double TemperaturaMinima { get; set; }
 
+    private AlertaGeada() : base() {}
+
     public AlertaGeada(Guid propriedadeId, double probabilidade, double temperaturaMinima)
         : base(propriedadeId, probabilidade)
     {

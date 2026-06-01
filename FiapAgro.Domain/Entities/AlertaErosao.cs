@@ -6,6 +6,8 @@ public class AlertaErosao : Alerta
 {
     public double InclinacaoSolo { get; set; }
 
+    private AlertaErosao() : base() {}
+
     public AlertaErosao(Guid propriedadeId, double probabilidade, double inclinacaoSolo)
         : base(propriedadeId, probabilidade)
     {
