@@ -23,6 +23,9 @@ public partial class Propriedade
     public DateTime CriadoEm { get; private set; }
     public Coordenada Localizacao { get; set; }
 
+    // Construtor sem parâmetros exigido pelo EF Core para materialização via reflexão.
+    private Propriedade() { Nome = string.Empty; Municipio = string.Empty; Estado = string.Empty; }
+
     public Propriedade(string nome, string municipio, string estado, double areaHectares, Guid usuarioId,
         Coordenada localizacao = default)
     {

@@ -6,6 +6,8 @@ public class AlertaEnchente : Alerta
 {
     public double VolumeMM { get; set; }
 
+    private AlertaEnchente() : base() {}
+
     public AlertaEnchente(Guid propriedadeId, double probabilidade, double volumeMM)
         : base(propriedadeId, probabilidade)
     {

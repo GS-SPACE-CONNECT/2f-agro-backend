@@ -7,6 +7,8 @@ public class AlertaPraga : Alerta
     public string EspeciePraga { get; set; }
     public string CulturaAfetada { get; set; }
 
+    private AlertaPraga() : base() { EspeciePraga = string.Empty; CulturaAfetada = string.Empty; }
+
     public AlertaPraga(Guid propriedadeId, double probabilidade, string especiePraga, string culturaAfetada)
         : base(propriedadeId, probabilidade)
     {

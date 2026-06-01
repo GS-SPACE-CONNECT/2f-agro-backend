@@ -6,6 +6,8 @@ public class AlertaSeca : Alerta
 {
     public int DiasSemChuva { get; set; }
 
+    private AlertaSeca() : base() {}
+
     public AlertaSeca(Guid propriedadeId, double probabilidade, int diasSemChuva)
         : base(propriedadeId, probabilidade)
     {
