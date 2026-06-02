@@ -45,7 +45,10 @@ public class AuthController : ControllerBase
         var usuario = await _repo.BuscarPorEmailAsync(request.Email);
 
         if (usuario is null || !_jwt.VerificarSenha(request.Senha, usuario.SenhaHash))
-            return Unauthorized("E-mail ou senha inválidos.");
+            return Problem(
+                statusCode: 401,
+                title: "Não autorizado",
+                detail: "E-mail ou senha inválidos.");
 
         _logger.LogInformation("Login bem-sucedido para {Email}.", usuario.Email);
         return Ok(GerarResposta(usuario));

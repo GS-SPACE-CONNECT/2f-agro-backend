@@ -546,10 +546,15 @@ HTTP/1.1 409 Conflict
 ```
 
 **401 — Credenciais inválidas:**
-```
+```json
 HTTP/1.1 401 Unauthorized
 
-E-mail ou senha inválidos.
+{
+  "title": "Não autorizado",
+  "status": 401,
+  "detail": "E-mail ou senha inválidos.",
+  "traceId": "00-3f1a2b4c5d6e7f8a9b0c1d2e3f4a5b6c-7d8e9f0a1b2c3d4e-00"
+}
 ```
 
 ---
