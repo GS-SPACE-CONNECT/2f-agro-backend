@@ -307,10 +307,11 @@ Erros retornam **ProblemDetails (RFC 7807)**:
 ### Pré-requisitos
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [PostgreSQL 15+](https://www.postgresql.org/) **ou** Docker
+- PostgreSQL 15+ (veja opções abaixo)
 
-### PostgreSQL com Docker
+### 1. Banco de dados — escolha uma opção
 
+**Docker (recomendado):**
 ```bash
 docker run --name fiapagro-pg \
   -e POSTGRES_USER=postgres \
@@ -319,41 +320,50 @@ docker run --name fiapagro-pg \
   -p 5432:5432 -d postgres:15
 ```
 
-### appsettings.json
-
-```json
-{
-  "ConnectionStrings": {
-    "Default": "Host=localhost;Port=5432;Database=fiapagro;Username=postgres;Password=postgres"
-  },
-  "Jwt": {
-    "SecretKey": "chave_secreta_com_minimo_32_caracteres_aqui!",
-    "Issuer": "FiapAgro.Api",
-    "Audience": "FiapAgro.Clients",
-    "ExpiresHours": "8"
-  }
-}
+**PostgreSQL local já instalado** — crie o banco:
+```bash
+createdb -U postgres fiapagro
 ```
 
-### Executar
+A connection string padrão em `appsettings.json` já está configurada para `localhost:5432` com usuário/senha `postgres`:
+```
+Host=localhost;Port=5432;Database=fiapagro;Username=postgres;Password=postgres
+```
+Ajuste o arquivo se seu PostgreSQL usar credenciais diferentes.
+
+### 2. Restaurar pacotes
 
 ```bash
-# 1. Restaurar pacotes
 dotnet restore
+```
 
-# 2. Aplicar migrations (cria tabelas + seed automático na startup)
-dotnet ef database update --project FiapAgro.Infrastructure --startup-project FiapAgro.Api
+### 3. Subir a API
 
-# 3. Subir a API
+```bash
 dotnet run --project FiapAgro.Api
 ```
 
-A API sobe em `http://localhost:5000` · Swagger em `http://localhost:5000/swagger`.
+> As migrations e o seed de dados rodam **automaticamente** na startup — não é necessário rodar `dotnet ef database update` manualmente.
 
-### Testes unitários
+A API inicia em `http://localhost:5000` · Swagger abre automaticamente em `http://localhost:5000/swagger`.
+
+### 4. Testes unitários
 
 ```bash
 dotnet test --verbosity normal
+```
+
+### (Opcional) Gerenciar migrations manualmente
+
+```bash
+# Instalar ferramenta global (uma vez)
+dotnet tool install --global dotnet-ef --version 8.0.11
+
+# Aplicar migrations sem subir a API
+dotnet ef database update --project FiapAgro.Infrastructure --startup-project FiapAgro.Api
+
+# Criar nova migration após alterar o modelo
+dotnet ef migrations add NomeDaMigration --project FiapAgro.Infrastructure --startup-project FiapAgro.Api
 ```
 
 ---
