@@ -12,13 +12,15 @@
 
 O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimáticos (pragas, secas, geadas, enchentes e erosão) para propriedades rurais cadastradas. Desenvolvido em C# .NET 8, atende às rubricas de **C# (100 pts)** e **SOA** da FIAP 3ES — GS 2026.1.
 
-## Equipe
+## Integrantes
 
-| GitHub | Nome |
-|--------|------|
-| [@brnleao](https://github.com/brnleao) | Bruno Leão |
-| [@DevRuanVieira](https://github.com/DevRuanVieira) | Ruan Vieira |
-| [@jota0802](https://github.com/jota0802) | José Otávio |
+| GitHub | Nome | RM |
+|--------|------|----|
+| [@brnleao](https://github.com/brnleao) | Bruno Leão | RM 555563 |
+| [@DevRuanVieira](https://github.com/DevRuanVieira) | Ruan Melo | RM 557599 |
+| [@jota0802](https://github.com/jota0802) | João Victor | RM 556790 |
+| [@lucksza](https://github.com/lucksza) | José Otávio |
+| [@roji-menez](https://github.com/roji-menez) | Rodrigo Jimenez |
 
 ---
 
