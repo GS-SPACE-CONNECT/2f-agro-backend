@@ -1,5 +1,6 @@
 using FiapAgro.Api.Dtos;
 using FiapAgro.Domain.Entities;
+using FiapAgro.Domain.Exceptions;
 using FiapAgro.Domain.Interfaces;
 using FiapAgro.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -25,45 +26,29 @@ public class AuthController : ControllerBase
     [HttpPost("registrar")]
     public async Task<IActionResult> Registrar([FromBody] RegistrarRequest request)
     {
-        try
-        {
-            if (await _repo.ExisteEmailAsync(request.Email))
-                return Conflict($"E-mail '{request.Email}' já está cadastrado.");
+        if (await _repo.ExisteEmailAsync(request.Email))
+            throw new ConflitoException($"E-mail '{request.Email}' já está cadastrado.");
 
-            var senhaHash = _jwt.HashSenha(request.Senha);
-            var usuario   = new Usuario(request.Nome, request.Email, senhaHash);
+        var senhaHash = _jwt.HashSenha(request.Senha);
+        var usuario   = new Usuario(request.Nome, request.Email, senhaHash);
 
-            await _repo.AdicionarAsync(usuario);
-            _logger.LogInformation("Usuário {Email} registrado com Id {Id}.", usuario.Email, usuario.Id);
+        await _repo.AdicionarAsync(usuario);
+        _logger.LogInformation("Usuário {Email} registrado com Id {Id}.", usuario.Email, usuario.Id);
 
-            return Created(string.Empty, GerarResposta(usuario));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao registrar usuário.");
-            return StatusCode(500, "Erro interno ao registrar usuário.");
-        }
+        return Created(string.Empty, GerarResposta(usuario));
     }
 
     /// <summary>Autentica um usuário e retorna o token JWT.</summary>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var usuario = await _repo.BuscarPorEmailAsync(request.Email);
+        var usuario = await _repo.BuscarPorEmailAsync(request.Email);
 
-            if (usuario is null || !_jwt.VerificarSenha(request.Senha, usuario.SenhaHash))
-                return Unauthorized("E-mail ou senha inválidos.");
+        if (usuario is null || !_jwt.VerificarSenha(request.Senha, usuario.SenhaHash))
+            return Unauthorized("E-mail ou senha inválidos.");
 
-            _logger.LogInformation("Login bem-sucedido para {Email}.", usuario.Email);
-            return Ok(GerarResposta(usuario));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao autenticar usuário.");
-            return StatusCode(500, "Erro interno ao autenticar.");
-        }
+        _logger.LogInformation("Login bem-sucedido para {Email}.", usuario.Email);
+        return Ok(GerarResposta(usuario));
     }
 
     private TokenResponse GerarResposta(Usuario usuario) => new(
