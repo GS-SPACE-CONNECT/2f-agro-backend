@@ -1,4 +1,5 @@
 using System.Text;
+using FiapAgro.Api.Middleware;
 using FiapAgro.Infrastructure.Auth;
 using FiapAgro.Infrastructure.Data;
 using FiapAgro.Infrastructure.Extensions;
@@ -8,6 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Tratamento de exceções centralizado (RFC 7807 — Problem Details) ---
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // --- Serviços de domínio e infraestrutura ---
 builder.Services.AddFiapAgroServices(builder.Configuration);
@@ -76,6 +81,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

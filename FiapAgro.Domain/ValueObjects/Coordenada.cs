@@ -1,3 +1,5 @@
+using FiapAgro.Domain.Exceptions;
+
 namespace FiapAgro.Domain.ValueObjects;
 
 /// <summary>
@@ -20,13 +22,13 @@ public readonly struct Coordenada : IEquatable<Coordenada>
     /// </summary>
     /// <param name="latitude">Graus decimais entre -90 e 90.</param>
     /// <param name="longitude">Graus decimais entre -180 e 180.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Lançada quando os valores estão fora do intervalo válido.</exception>
+    /// <exception cref="RegraDeNegocioException">Lançada quando os valores estão fora do intervalo válido.</exception>
     public Coordenada(double latitude, double longitude)
     {
         if (latitude < -90 || latitude > 90)
-            throw new ArgumentOutOfRangeException(nameof(latitude), "Latitude deve estar entre -90 e 90.");
+            throw new RegraDeNegocioException("Latitude deve estar entre -90 e 90.");
         if (longitude < -180 || longitude > 180)
-            throw new ArgumentOutOfRangeException(nameof(longitude), "Longitude deve estar entre -180 e 180.");
+            throw new RegraDeNegocioException("Longitude deve estar entre -180 e 180.");
 
         Latitude = latitude;
         Longitude = longitude;
