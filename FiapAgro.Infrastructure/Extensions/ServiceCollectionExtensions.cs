@@ -16,13 +16,13 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // PostgreSQL via EF Core — connection string lida de appsettings.json
+        // PostgreSQL via EF Core
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Default")));
 
-        // Repositórios in-memory (substituídos por implementações EF quando necessário)
-        services.AddSingleton<IPropriedadeRepository, PropriedadeRepositoryInMemory>();
-        services.AddSingleton<IAlertaRepository, AlertaRepositoryInMemory>();
+        // Repositórios EF Core — Scoped para acompanhar o ciclo de vida do DbContext
+        services.AddScoped<IPropriedadeRepository, PropriedadeRepositoryEF>();
+        services.AddScoped<IAlertaRepository, AlertaRepositoryEF>();
 
         // Notificador
         services.AddScoped<INotificador, NotificadorConsole>();
