@@ -1,12 +1,14 @@
 using FiapAgro.Api.Dtos;
 using FiapAgro.Domain.Entities;
 using FiapAgro.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiapAgro.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AlertasController : ControllerBase
 {
     private readonly IAlertaRepository _repo;

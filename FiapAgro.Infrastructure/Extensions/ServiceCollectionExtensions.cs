@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         // Repositórios EF Core — Scoped para acompanhar o ciclo de vida do DbContext
         services.AddScoped<IPropriedadeRepository, PropriedadeRepositoryEF>();
         services.AddScoped<IAlertaRepository, AlertaRepositoryEF>();
+        services.AddScoped<IUsuarioRepository, UsuarioRepositoryEF>();
 
         // Notificador
         services.AddScoped<INotificador, NotificadorConsole>();

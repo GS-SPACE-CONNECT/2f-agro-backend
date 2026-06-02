@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Propriedade> Propriedades => Set<Propriedade>();
     public DbSet<Alerta> Alertas => Set<Alerta>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,7 @@ public class AppDbContext : DbContext
 
         ConfigurarPropriedade(modelBuilder);
         ConfigurarAlerta(modelBuilder);
+        ConfigurarUsuario(modelBuilder);
     }
 
     private static void ConfigurarPropriedade(ModelBuilder mb)
@@ -45,6 +47,20 @@ public class AppDbContext : DbContext
                 c.Property(l => l.Latitude).HasColumnName("localizacao_lat").HasDefaultValue(0.0);
                 c.Property(l => l.Longitude).HasColumnName("localizacao_lng").HasDefaultValue(0.0);
             });
+        });
+    }
+
+    private static void ConfigurarUsuario(ModelBuilder mb)
+    {
+        mb.Entity<Usuario>(entity =>
+        {
+            entity.ToTable("usuarios");
+            entity.HasKey(u => u.Id);
+            entity.Property(u => u.Nome).HasMaxLength(150).IsRequired();
+            entity.Property(u => u.Email).HasMaxLength(200).IsRequired();
+            entity.HasIndex(u => u.Email).IsUnique();
+            entity.Property(u => u.SenhaHash).IsRequired();
+            entity.Property(u => u.CriadoEm).IsRequired();
         });
     }
 
