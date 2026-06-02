@@ -19,8 +19,8 @@ O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimát
 | [@brnleao](https://github.com/brnleao) | Bruno Leão | RM 555563 |
 | [@DevRuanVieira](https://github.com/DevRuanVieira) | Ruan Melo | RM 557599 |
 | [@jota0802](https://github.com/jota0802) | João Victor | RM 556790 |
-| [@lucksza](https://github.com/lucksza) | José Otávio |
-| [@roji-menez](https://github.com/roji-menez) | Rodrigo Jimenez |
+| [@lucksza](https://github.com/lucksza) | Lucca Borges | RM 554608 |
+| [@roji-menez](https://github.com/roji-menez) | Rodrigo Jimenez | RM 558148 |
 
 ---
 
