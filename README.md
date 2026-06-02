@@ -360,24 +360,203 @@ dotnet test --verbosity normal
 
 ## Evidências de Execução
 
-Exemplos completos de requisições HTTP em [`docs/evidencias/requests.http`](docs/evidencias/requests.http) (VS Code REST Client).
+Saídas reais capturadas com a API rodando em `http://localhost:5000` contra PostgreSQL 15 local.  
+Arquivo de requisições completo: [`docs/evidencias/requests.http`](docs/evidencias/requests.http)
 
-**Como usar:**
-1. Instale a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) no VS Code
-2. Suba a API: `dotnet run --project FiapAgro.Api`
-3. Abra `docs/evidencias/requests.http` → clique em **Send Request** em cada bloco
+---
 
-**Fluxo de teste recomendado:**
+### Console — Startup + Migrations + Seed
 
 ```
-1. POST /api/auth/registrar  → copiar o token
-2. POST /api/auth/login      → confirmar autenticação
-3. POST /api/propriedades    → criar propriedade (usar o token)
-4. POST /api/alertas/praga   → criar alerta
-5. GET  /api/alertas/recentes → listar alertas
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [...] SELECT EXISTS (SELECT 1 FROM propriedades AS p)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [...] INSERT INTO propriedades (...) VALUES (...);  -- seed: 2 propriedades
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [...] INSERT INTO alertas (...) VALUES (...);        -- seed: 5 alertas
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\...\FiapAgro.Api
 ```
 
-O Swagger (`/swagger`) também serve como evidência interativa — autentique com o token JWT no botão **Authorize 🔒** e execute os endpoints diretamente no browser.
+---
+
+### Migrations do zero (`dotnet ef database update`)
+
+```
+Build started...
+Build succeeded.
+Applying migration '20260601230202_Initial'.
+Applying migration '20260602002805_AddUsuario'.
+Done.
+```
+
+---
+
+### POST /api/auth/registrar → 201 Created
+
+```http
+POST http://localhost:5000/api/auth/registrar
+Content-Type: application/json
+
+{ "nome": "Bruno Leao", "email": "bruno@fiapagro.com", "senha": "Senha@123" }
+```
+
+```json
+HTTP/1.1 201 Created
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRmYmE1...",
+  "nome": "Bruno Leao",
+  "email": "bruno@fiapagro.com",
+  "expira": "2026-06-02T10:52:14.1331616Z"
+}
+```
+
+---
+
+### POST /api/auth/login → 200 OK
+
+```json
+HTTP/1.1 200 OK
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRmYmE1...",
+  "nome": "Bruno Leao",
+  "email": "bruno@fiapagro.com",
+  "expira": "2026-06-02T10:52:28.2934858Z"
+}
+```
+
+---
+
+### POST /api/propriedades → 201 Created
+
+```json
+HTTP/1.1 201 Created
+
+{
+  "id": "68a9c102-0951-41c0-93b3-f0c8e94621ad",
+  "nome": "Fazenda Boa Vista",
+  "municipio": "Ribeirao Preto",
+  "estado": "SP",
+  "areaHectares": 250.5,
+  "usuarioId": "00000000-0000-0000-0000-000000000001",
+  "descricao": "Fazenda Boa Vista — Ribeirao Preto/SP (250,5 ha) @ (-21,170400, -47,810300)",
+  "criadoEm": "2026-06-02T02:52:33.8467207Z"
+}
+```
+
+---
+
+### POST /api/alertas/praga → 201 Created (severidade Critico)
+
+```json
+HTTP/1.1 201 Created
+
+{
+  "id": "77acf987-8c1f-4817-a55d-bbdb1ddf870f",
+  "propriedadeId": "68a9c102-0951-41c0-93b3-f0c8e94621ad",
+  "tipo": "AlertaPraga",
+  "severidade": "Critico",
+  "probabilidade": 0.87,
+  "recomendacao": "Aplicar defensivo imediatamente contra lagarta-do-cartucho na cultura de milho.",
+  "criadoEm": "01/06/2026 23:52"
+}
+```
+
+---
+
+### GET /api/alertas/recentes → 200 OK
+
+```json
+HTTP/1.1 200 OK
+
+[
+  {
+    "id": "77acf987-8c1f-4817-a55d-bbdb1ddf870f",
+    "tipo": "AlertaPraga",
+    "severidade": "Critico",
+    "probabilidade": 0.87,
+    "recomendacao": "Aplicar defensivo imediatamente contra lagarta-do-cartucho na cultura de milho.",
+    "criadoEm": "01/06/2026 23:52"
+  },
+  {
+    "id": "ce2fb5cc-2806-4660-ac4c-983381d1cab9",
+    "tipo": "AlertaErosao",
+    "severidade": "Medio",
+    "probabilidade": 0.55,
+    "recomendacao": "Inclinação de 22,0° — monitorar erosão e manter cobertura do solo.",
+    "criadoEm": "01/06/2026 23:52"
+  },
+  {
+    "id": "e0472843-89c3-47c7-aba0-625f2f9d7846",
+    "tipo": "AlertaEnchente",
+    "severidade": "Critico",
+    "probabilidade": 0.91,
+    "recomendacao": "Volume crítico de 130mm — evacuar áreas baixas e acionar defesa civil.",
+    "criadoEm": "01/06/2026 23:52"
+  }
+]
+```
+
+---
+
+### Erros — ProblemDetails RFC 7807
+
+**404 — Recurso inexistente:**
+```json
+HTTP/1.1 404 Not Found
+
+{
+  "title": "Recurso não encontrado",
+  "status": 404,
+  "detail": "Propriedade '00000000-0000-0000-0000-000000000000' não encontrado.",
+  "traceId": "00-092675658e1e378afa71b2fa100e6434-b8b0f748746c2a0c-00"
+}
+```
+
+**409 — E-mail duplicado:**
+```json
+HTTP/1.1 409 Conflict
+
+{
+  "title": "Conflito de dados",
+  "status": 409,
+  "detail": "E-mail 'bruno@fiapagro.com' já está cadastrado.",
+  "traceId": "00-acf0282220c679047522d07924a88b77-7591ad955791d9b6-00"
+}
+```
+
+**401 — Credenciais inválidas:**
+```
+HTTP/1.1 401 Unauthorized
+
+E-mail ou senha inválidos.
+```
+
+---
+
+### Swagger UI
+
+Disponível em `http://localhost:5000/swagger` — use o botão **Authorize 🔒** para inserir o JWT e testar os endpoints protegidos.
+
+---
+
+### xUnit — Testes de domínio
+
+```
+dotnet test --verbosity normal
+
+Passed!  - Failed: 0, Passed: 66, Skipped: 0, Total: 66, Duration: 31 ms
+```
 
 ---
 
