@@ -1,0 +1,233 @@
+# FiapAgro — Evidências de Execução
+# Ferramenta: VS Code REST Client (extensão humao.rest-client)
+# Como usar: abra este arquivo no VS Code e clique em "Send Request" em cada bloco
+
+@baseUrl = http://localhost:5000
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. AUTH — Registrar usuário
+# ─────────────────────────────────────────────────────────────────────────────
+# @name registrar
+POST {{baseUrl}}/api/auth/registrar
+Content-Type: application/json
+
+{
+  "nome": "Bruno Leão",
+  "email": "bruno@fiapagro.com",
+  "senha": "Senha@123"
+}
+
+### Resposta esperada: 201 Created
+# {
+#   "token": "eyJhbGci...",
+#   "nome": "Bruno Leão",
+#   "email": "bruno@fiapagro.com",
+#   "expira": "2026-06-02T08:00:00Z"
+# }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. AUTH — Login
+# ─────────────────────────────────────────────────────────────────────────────
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "bruno@fiapagro.com",
+  "senha": "Senha@123"
+}
+
+### Resposta esperada: 200 OK
+# {
+#   "token": "eyJhbGci...",
+#   "nome": "Bruno Leão",
+#   "email": "bruno@fiapagro.com",
+#   "expira": "2026-06-02T08:00:00Z"
+# }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IMPORTANTE: Cole o token retornado no login abaixo
+# ─────────────────────────────────────────────────────────────────────────────
+@token = SEU_TOKEN_JWT_AQUI
+@usuarioId = SEU_USUARIO_ID_AQUI
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. PROPRIEDADES — Criar
+# ─────────────────────────────────────────────────────────────────────────────
+# @name criarPropriedade
+POST {{baseUrl}}/api/propriedades
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Fazenda Boa Vista",
+  "municipio": "Ribeirão Preto",
+  "estado": "SP",
+  "areaHectares": 250.5,
+  "usuarioId": "{{usuarioId}}",
+  "latitude": -21.1704,
+  "longitude": -47.8103
+}
+
+### Resposta esperada: 201 Created
+# {
+#   "id": "3fa85f64-...",
+#   "nome": "Fazenda Boa Vista",
+#   "municipio": "Ribeirão Preto",
+#   "estado": "SP",
+#   "areaHectares": 250.5,
+#   "latitude": -21.1704,
+#   "longitude": -47.8103,
+#   "criadoEm": "2026-06-02T..."
+# }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. PROPRIEDADES — Listar por usuário
+# ─────────────────────────────────────────────────────────────────────────────
+GET {{baseUrl}}/api/propriedades?usuarioId={{usuarioId}}
+Authorization: Bearer {{token}}
+
+### Resposta esperada: 200 OK — array de propriedades
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. ALERTAS — Criar alerta de praga
+# (substitua o propriedadeId pelo id retornado no passo 3)
+# ─────────────────────────────────────────────────────────────────────────────
+@propriedadeId = SEU_PROPRIEDADE_ID_AQUI
+
+POST {{baseUrl}}/api/alertas/praga
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "propriedadeId": "{{propriedadeId}}",
+  "probabilidade": 0.87,
+  "especiePraga": "lagarta-do-cartucho",
+  "culturaAfetada": "milho"
+}
+
+### Resposta esperada: 201 Created — severidade Critico
+# {
+#   "id": "...",
+#   "tipo": "AlertaPraga",
+#   "probabilidade": 0.87,
+#   "severidade": "Critico",
+#   "recomendacao": "Aplicar defensivo imediatamente contra lagarta-do-cartucho...",
+#   "criadoEm": "2026-06-02T..."
+# }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. ALERTAS — Criar alerta de seca
+# ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/api/alertas/seca
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "propriedadeId": "{{propriedadeId}}",
+  "probabilidade": 0.75,
+  "diasSemChuva": 25
+}
+
+### Resposta esperada: 201 Created — severidade Critico (> 21 dias)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 7. ALERTAS — Criar alerta de geada
+# ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/api/alertas/geada
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "propriedadeId": "{{propriedadeId}}",
+  "probabilidade": 0.60,
+  "temperaturaMinima": -4.5
+}
+
+### Resposta esperada: 201 Created — severidade Critico (< -3°C)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. ALERTAS — Criar alerta de enchente
+# ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/api/alertas/enchente
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "propriedadeId": "{{propriedadeId}}",
+  "probabilidade": 0.80,
+  "volumeMM": 120.0
+}
+
+### Resposta esperada: 201 Created — severidade Critico (> 100 mm)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 9. ALERTAS — Criar alerta de erosão
+# ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/api/alertas/erosao
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "propriedadeId": "{{propriedadeId}}",
+  "probabilidade": 0.55,
+  "inclinacaoSolo": 32.0
+}
+
+### Resposta esperada: 201 Created — severidade Alto (> 30°)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 10. ALERTAS — Listar recentes
+# ─────────────────────────────────────────────────────────────────────────────
+GET {{baseUrl}}/api/alertas/recentes?quantidade=10
+Authorization: Bearer {{token}}
+
+### Resposta esperada: 200 OK — array com os alertas criados acima
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 11. ERRO — Recurso inexistente (404 ProblemDetails)
+# ─────────────────────────────────────────────────────────────────────────────
+GET {{baseUrl}}/api/propriedades/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Resposta esperada: 404 Not Found
+# {
+#   "status": 404,
+#   "title": "Recurso não encontrado",
+#   "detail": "Propriedade '00000000-...' não encontrado.",
+#   "traceId": "00-..."
+# }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 12. ERRO — E-mail duplicado (409 ProblemDetails)
+# ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/api/auth/registrar
+Content-Type: application/json
+
+{
+  "nome": "Bruno Duplicado",
+  "email": "bruno@fiapagro.com",
+  "senha": "Senha@123"
+}
+
+### Resposta esperada: 409 Conflict
+# {
+#   "status": 409,
+#   "title": "Conflito de dados",
+#   "detail": "E-mail 'bruno@fiapagro.com' já está cadastrado.",
+#   "traceId": "00-..."
+# }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 13. ERRO — Credenciais inválidas (401)
+# ─────────────────────────────────────────────────────────────────────────────
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "bruno@fiapagro.com",
+  "senha": "SenhaErrada!"
+}
+
+### Resposta esperada: 401 Unauthorized
+# "E-mail ou senha inválidos."
