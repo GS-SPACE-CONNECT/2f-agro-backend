@@ -16,6 +16,8 @@ public class AppDbContext : DbContext
     public DbSet<Propriedade> Propriedades => Set<Propriedade>();
     public DbSet<Alerta> Alertas => Set<Alerta>();
     public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<Lavoura> Lavouras => Set<Lavoura>();
+    public DbSet<DiagnosticoPraga> Diagnosticos => Set<DiagnosticoPraga>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,6 +26,8 @@ public class AppDbContext : DbContext
         ConfigurarPropriedade(modelBuilder);
         ConfigurarAlerta(modelBuilder);
         ConfigurarUsuario(modelBuilder);
+        ConfigurarLavoura(modelBuilder);
+        ConfigurarDiagnostico(modelBuilder);
     }
 
     private static void ConfigurarPropriedade(ModelBuilder mb)
@@ -110,6 +114,48 @@ public class AppDbContext : DbContext
         mb.Entity<AlertaErosao>(entity =>
         {
             entity.Property(a => a.InclinacaoSolo);
+        });
+    }
+
+    private static void ConfigurarLavoura(ModelBuilder mb)
+    {
+        mb.Entity<Lavoura>(entity =>
+        {
+            entity.ToTable("lavouras");
+            entity.HasKey(l => l.Id);
+
+            entity.Property(l => l.PropriedadeId).IsRequired();
+            entity.Property(l => l.Cultura).HasConversion<string>().HasMaxLength(50).IsRequired();
+            entity.Property(l => l.Identificador).HasMaxLength(50).IsRequired();
+            entity.Property(l => l.AreaHectares).IsRequired();
+            entity.Property(l => l.Saude).HasConversion<string>().HasMaxLength(30).IsRequired();
+            entity.Property(l => l.NdviAtual);
+            entity.Property(l => l.UltimaLeitura);
+            entity.Property(l => l.CriadoEm).IsRequired();
+
+            entity.ComplexProperty(l => l.Coordenadas, c =>
+            {
+                c.Property(co => co.Latitude).HasColumnName("coordenadas_lat").HasDefaultValue(0.0);
+                c.Property(co => co.Longitude).HasColumnName("coordenadas_lng").HasDefaultValue(0.0);
+            });
+        });
+    }
+
+    private static void ConfigurarDiagnostico(ModelBuilder mb)
+    {
+        mb.Entity<DiagnosticoPraga>(entity =>
+        {
+            entity.ToTable("diagnosticos");
+            entity.HasKey(d => d.Id);
+
+            entity.Property(d => d.LavouraId);
+            entity.Property(d => d.FotoUrl).IsRequired();
+            entity.Property(d => d.Praga).HasConversion<string>().HasMaxLength(50).IsRequired();
+            entity.Property(d => d.Confianca).IsRequired();
+            entity.Property(d => d.Severidade).HasConversion<string>().HasMaxLength(20).IsRequired();
+            entity.Property(d => d.Recomendacao).HasMaxLength(500).IsRequired();
+            entity.Property(d => d.AgronomoTelefone).HasMaxLength(20);
+            entity.Property(d => d.CriadoEm).IsRequired();
         });
     }
 }
