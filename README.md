@@ -1,10 +1,13 @@
 # FiapAgro — Backend
 
 > API REST .NET 8 para monitoramento agroclimático — FIAP Global Solution 2026.1
+> Matéria: **C# .NET** (100 pts) · FIAP 3ES · GS 2026.1
 
 [![build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/GS-SPACE-CONNECT/2f-agro-backend/actions)
 [![Hub](https://img.shields.io/badge/hub-2f--agro-success)](https://github.com/GS-SPACE-CONNECT/2f-agro)
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com)
+
+> ℹ️ **SOA migrou (28/05).** A matéria SOA virou implementação Java própria — agora no repo [2f-agro-soa](https://github.com/GS-SPACE-CONNECT/2f-agro-soa) (Spring Boot REST + SOAP). Este repo é só C#.
 
 ---
 
@@ -14,15 +17,17 @@ O agronegócio brasileiro responde por mais de 25% do PIB nacional, mas ainda é
 
 O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimáticos em tempo real para propriedades rurais cadastradas. O produtor recebe recomendações precisas por tipo de risco (praga, seca, geada, enchente ou erosão), com nível de severidade calculado automaticamente, permitindo ação imediata antes que o dano se torne irreversível.
 
-O projeto integra o tema da **Global Solution 2026.1 — Space Connect**: dados agroclimáticos provenientes de sensores e satélites alimentam os detectores da API, que classificam automaticamente o risco e geram alertas com recomendações. Desenvolvido em C# .NET 8, atende às rubricas de **C# (100 pts)** e **SOA** da FIAP 3ES — GS 2026.1.
+O projeto integra o tema da **Global Solution 2026.1 — Space Connect**: dados agroclimáticos provenientes de sensores e satélites alimentam os detectores da API, que classificam automaticamente o risco e geram alertas com recomendações. Desenvolvido em C# .NET 8, atende à rubrica de **C# (100 pts)** da FIAP 3ES — GS 2026.1.
 
-## Equipe
+## Integrantes
 
-| GitHub | Nome |
-|--------|------|
-| [@brnleao](https://github.com/brnleao) | Bruno Leão |
-| [@DevRuanVieira](https://github.com/DevRuanVieira) | Ruan Vieira |
-| [@jota0802](https://github.com/jota0802) | José Otávio |
+| GitHub | Nome | RM |
+|--------|------|----|
+| [@brnleao](https://github.com/brnleao) | Bruno Leão | RM 555563 |
+| [@DevRuanVieira](https://github.com/DevRuanVieira) | Ruan Melo | RM 557599 |
+| [@jota0802](https://github.com/jota0802) | João Victor | RM 556790 |
+| [@lucksza](https://github.com/lucksza) | Lucca Borges | RM 554608 |
+| [@roji-menez](https://github.com/roji-menez) | Rodrigo Jimenez | RM 558148 |
 
 ---
 
