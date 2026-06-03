@@ -571,6 +571,73 @@ Passed!  - Failed: 0, Passed: 66, Skipped: 0, Total: 66, Duration: 31 ms
 
 ---
 
+## Screenshots — Swagger UI
+
+> Prints capturados com a API rodando em `http://localhost:5050/swagger`.  
+> Arquivos salvos em `docs/evidencias/screenshots/`.
+
+---
+
+### 1. Swagger UI — Visão Geral
+
+![Swagger UI - visão geral](docs/evidencias/screenshots/01-swagger-geral.png)
+
+---
+
+### 2. POST /api/auth/registrar → 201 Created
+
+![Registrar usuário - 201 Created](docs/evidencias/screenshots/02-auth-registrar.png)
+
+---
+
+### 3. Authorize — Bearer Token
+
+![Authorize com JWT](docs/evidencias/screenshots/03-authorize-token.png)
+
+---
+
+### 4. POST /api/propriedades → 201 Created
+
+![Criar propriedade - 201 Created](docs/evidencias/screenshots/04-propriedades-criar.png)
+
+---
+
+### 5. POST /api/alertas/praga → 201 Created (Critico)
+
+![Alerta praga - 201 Created](docs/evidencias/screenshots/05-alertas-praga.png)
+
+---
+
+### 6. GET /api/alertas/recentes → 200 OK
+
+![Alertas recentes - 200 OK](docs/evidencias/screenshots/06-alertas-recentes.png)
+
+---
+
+### 7. GET /api/propriedades/{id} inexistente → 404 ProblemDetails
+
+![404 ProblemDetails](docs/evidencias/screenshots/07-erro-404.png)
+
+---
+
+### 8. POST /api/auth/registrar e-mail duplicado → 409 ProblemDetails
+
+![409 Conflict ProblemDetails](docs/evidencias/screenshots/08-erro-409.png)
+
+---
+
+### 9. POST /api/auth/login credenciais inválidas → 401 ProblemDetails
+
+![401 Unauthorized ProblemDetails](docs/evidencias/screenshots/09-erro-401.png)
+
+---
+
+### 10. xUnit — Testes Passando
+
+![xUnit 66 testes passando](docs/evidencias/screenshots/10-testes-xunit.png)
+
+---
+
 ## Estrutura de Pastas
 
 ```
