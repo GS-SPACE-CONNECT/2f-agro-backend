@@ -2,7 +2,7 @@
 # Ferramenta: VS Code REST Client (extensão humao.rest-client)
 # Como usar: abra este arquivo no VS Code e clique em "Send Request" em cada bloco
 
-@baseUrl = http://localhost:5000
+@baseUrl = http://localhost:5050
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. AUTH — Registrar usuário

@@ -10,7 +10,11 @@
 
 ## Sobre o Projeto
 
-O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimáticos (pragas, secas, geadas, enchentes e erosão) para propriedades rurais cadastradas. Desenvolvido em C# .NET 8, atende às rubricas de **C# (100 pts)** e **SOA** da FIAP 3ES — GS 2026.1.
+O agronegócio brasileiro responde por mais de 25% do PIB nacional, mas ainda é altamente vulnerável a eventos climáticos extremos — pragas, secas, geadas, enchentes e erosão de solo causam bilhões em perdas a cada safra.
+
+O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimáticos em tempo real para propriedades rurais cadastradas. O produtor recebe recomendações precisas por tipo de risco (praga, seca, geada, enchente ou erosão), com nível de severidade calculado automaticamente, permitindo ação imediata antes que o dano se torne irreversível.
+
+O projeto integra o tema da **Global Solution 2026.1 — Space Connect**: dados agroclimáticos provenientes de sensores e satélites alimentam os detectores da API, que classificam automaticamente o risco e geram alertas com recomendações. Desenvolvido em C# .NET 8, atende às rubricas de **C# (100 pts)** e **SOA** da FIAP 3ES — GS 2026.1.
 
 ## Equipe
 
@@ -243,17 +247,15 @@ erDiagram
 
 ## Rubrica C# — Checklist
 
-| # | Item | Pts | Implementação |
-|---|------|:---:|---|
-| 4 | Classes abstratas + herança + polimorfismo | 20 | `Alerta` (abstract) → 5 herdeiros; `CalcularSeveridade()` e `Recomendacao()` sobrescritos em cada subclasse |
-| 5 | Interfaces + injeção de dependência | 20 | `IAlertaRepository`, `IPropriedadeRepository`, `IUsuarioRepository`, `IDetector<T>`, `INotificador` — todos Scoped via `AddFiapAgroServices()` |
-| 6 | Structs + Partial Classes | 5 | `readonly struct Coordenada` (GPS, value-semantics, IEquatable); `partial class Propriedade` (estado / comportamento em arquivos separados) |
-| 7 | EF Core + migrations + PostgreSQL | 20 | TPH para `Alerta`, `ComplexProperty` para `Coordenada`, 2 migrations, seed automático na startup |
-| 8 | Controllers + endpoints REST | 10 | 3 controllers · 15 endpoints · DTOs tipados (records) · `CreatedAtAction` |
-| 9 | Tratamento de exceções | 10 | Hierarquia `DomainException` → `GlobalExceptionHandler` (`IExceptionHandler` .NET 8) → RFC 7807 ProblemDetails com `traceId` |
-| 10 | Auth + JWT | 15 | `JwtService` (PBKDF2 + HMAC-SHA256) · `AuthController` · `[Authorize]` · Swagger Bearer |
-| 11 | README + diagrama + evidências | 30 | Este arquivo + Mermaid (camadas · classes · fluxo · ER) + `docs/evidencias/` |
-| | **Total** | **130** | |
+| Item | Pts | Implementação |
+|------|:---:|---|
+| Modelagem de Domínio & POO — herança, polimorfismo, classes públicas/privadas/estáticas | 20 | `Alerta` (abstract) → 5 herdeiros; `CalcularSeveridade()` e `Recomendacao()` sobrescritos; `_totalCriados` (private static) · `TotalCriados` (public static) |
+| Abstração e Interfaces + injeção de dependência | 20 | `IAlertaRepository`, `IPropriedadeRepository`, `IUsuarioRepository`, `IDetector<T>`, `INotificador` — todos Scoped via `AddFiapAgroServices()` |
+| Lógica de Fluxo, Métodos e Datas | 15 | Métodos modulares por detector (`DetectorPraga`, `DetectorSeca` etc.); `DateTime.UtcNow` em `Alerta`; `FormatarData(DateTime)` estático; `Math.Clamp` para probabilidade; `ToString()` sobrescrito |
+| Tratamento de Exceções | 10 | Hierarquia `DomainException` → `GlobalExceptionHandler` (`IExceptionHandler` .NET 8) → RFC 7807 ProblemDetails com `traceId` |
+| Structs + Partial Classes | 5 | `readonly struct Coordenada` (GPS, value-semantics, IEquatable); `partial class Propriedade` (estado / comportamento em arquivos separados) |
+| Organização — estrutura de pastas, nomenclatura, README, diagrama, evidências | 30 | Este arquivo + Mermaid (camadas · classes · fluxo · ER) + [`docs/evidencias/`](docs/evidencias/) |
+| | **100** | |
 
 ---
 
@@ -345,9 +347,18 @@ dotnet run --project FiapAgro.Api
 
 > As migrations e o seed de dados rodam **automaticamente** na startup — não é necessário rodar `dotnet ef database update` manualmente.
 
-A API inicia em `http://localhost:5000` · Swagger abre automaticamente em `http://localhost:5000/swagger`.
+A API inicia em `http://localhost:5050` · Swagger abre automaticamente em `http://localhost:5050/swagger`.
 
-### 4. Testes unitários
+### 4. Testar via Swagger
+
+1. Acesse `http://localhost:5050/swagger`
+2. Chame `POST /api/auth/registrar` para criar um usuário — copie o `token` e o `sub` (id do usuário) da resposta
+3. Clique em **Authorize 🔒** no topo e cole o token
+4. Use `POST /api/propriedades` com o `sub` como `usuarioId` para cadastrar uma propriedade
+5. Use `POST /api/alertas/praga` (ou outro tipo) com o `id` da propriedade
+6. Verifique com `GET /api/alertas/recentes?quantidade=10`
+
+### 5. Testes unitários
 
 ```bash
 dotnet test --verbosity normal
@@ -370,8 +381,10 @@ dotnet ef migrations add NomeDaMigration --project FiapAgro.Infrastructure --sta
 
 ## Evidências de Execução
 
-Saídas reais capturadas com a API rodando em `http://localhost:5000` contra PostgreSQL 15 local.  
-Arquivo de requisições completo: [`docs/evidencias/requests.http`](docs/evidencias/requests.http)
+Saídas reais capturadas com a API rodando em `http://localhost:5050` contra PostgreSQL 15 local.
+
+- Arquivo de requisições completo: [`docs/evidencias/requests.http`](docs/evidencias/requests.http)
+- Saídas reais de execução: [`docs/evidencias/saidas_reais.md`](docs/evidencias/saidas_reais.md)
 
 ---
 
@@ -387,7 +400,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (2ms) [...] INSERT INTO alertas (...) VALUES (...);        -- seed: 5 alertas
 info: Microsoft.Hosting.Lifetime[14]
-      Now listening on: http://localhost:5000
+      Now listening on: http://localhost:5050
 info: Microsoft.Hosting.Lifetime[0]
       Application started. Press Ctrl+C to shut down.
 info: Microsoft.Hosting.Lifetime[0]
@@ -413,7 +426,7 @@ Done.
 ### POST /api/auth/registrar → 201 Created
 
 ```http
-POST http://localhost:5000/api/auth/registrar
+POST http://localhost:5050/api/auth/registrar
 Content-Type: application/json
 
 { "nome": "Bruno Leao", "email": "bruno@fiapagro.com", "senha": "Senha@123" }
@@ -426,7 +439,7 @@ HTTP/1.1 201 Created
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRmYmE1...",
   "nome": "Bruno Leao",
   "email": "bruno@fiapagro.com",
-  "expira": "2026-06-02T10:52:14.1331616Z"
+  "expira": "2026-06-03T10:52:14Z"
 }
 ```
 
@@ -441,7 +454,7 @@ HTTP/1.1 200 OK
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRmYmE1...",
   "nome": "Bruno Leao",
   "email": "bruno@fiapagro.com",
-  "expira": "2026-06-02T10:52:28.2934858Z"
+  "expira": "2026-06-03T10:52:28Z"
 }
 ```
 
@@ -460,7 +473,7 @@ HTTP/1.1 201 Created
   "areaHectares": 250.5,
   "usuarioId": "00000000-0000-0000-0000-000000000001",
   "descricao": "Fazenda Boa Vista — Ribeirao Preto/SP (250,5 ha) @ (-21,170400, -47,810300)",
-  "criadoEm": "2026-06-02T02:52:33.8467207Z"
+  "criadoEm": "2026-06-03T02:52:33Z"
 }
 ```
 
@@ -472,50 +485,33 @@ HTTP/1.1 201 Created
 HTTP/1.1 201 Created
 
 {
-  "id": "77acf987-8c1f-4817-a55d-bbdb1ddf870f",
+  "id": "008016cd-6b5b-4a65-891b-2f15230a377c",
   "propriedadeId": "68a9c102-0951-41c0-93b3-f0c8e94621ad",
   "tipo": "AlertaPraga",
   "severidade": "Critico",
   "probabilidade": 0.87,
   "recomendacao": "Aplicar defensivo imediatamente contra lagarta-do-cartucho na cultura de milho.",
-  "criadoEm": "01/06/2026 23:52"
+  "criadoEm": "03/06/2026 02:03"
 }
 ```
 
 ---
 
-### GET /api/alertas/recentes → 200 OK
+### GET /api/alertas/recentes → 200 OK (todos os 5 tipos)
 
 ```json
 HTTP/1.1 200 OK
 
 [
-  {
-    "id": "77acf987-8c1f-4817-a55d-bbdb1ddf870f",
-    "tipo": "AlertaPraga",
-    "severidade": "Critico",
-    "probabilidade": 0.87,
-    "recomendacao": "Aplicar defensivo imediatamente contra lagarta-do-cartucho na cultura de milho.",
-    "criadoEm": "01/06/2026 23:52"
-  },
-  {
-    "id": "ce2fb5cc-2806-4660-ac4c-983381d1cab9",
-    "tipo": "AlertaErosao",
-    "severidade": "Medio",
-    "probabilidade": 0.55,
-    "recomendacao": "Inclinação de 22,0° — monitorar erosão e manter cobertura do solo.",
-    "criadoEm": "01/06/2026 23:52"
-  },
-  {
-    "id": "e0472843-89c3-47c7-aba0-625f2f9d7846",
-    "tipo": "AlertaEnchente",
-    "severidade": "Critico",
-    "probabilidade": 0.91,
-    "recomendacao": "Volume crítico de 130mm — evacuar áreas baixas e acionar defesa civil.",
-    "criadoEm": "01/06/2026 23:52"
-  }
+  { "tipo": "AlertaPraga",    "severidade": "Critico", "probabilidade": 0.87, "recomendacao": "Aplicar defensivo imediatamente contra lagarta-do-cartucho na cultura de milho." },
+  { "tipo": "AlertaErosao",   "severidade": "Medio",   "probabilidade": 0.55, "recomendacao": "Inclinação de 22,0° — monitorar erosão e manter cobertura do solo." },
+  { "tipo": "AlertaEnchente", "severidade": "Critico", "probabilidade": 0.91, "recomendacao": "Volume crítico de 130mm — evacuar áreas baixas e acionar defesa civil." },
+  { "tipo": "AlertaGeada",    "severidade": "Alto",    "probabilidade": 0.65, "recomendacao": "Risco alto de geada (-1,5°C) — cobrir plantas sensíveis." },
+  { "tipo": "AlertaSeca",     "severidade": "Alto",    "probabilidade": 0.72, "recomendacao": "Aumentar frequência de irrigação — 18 dias sem chuva." }
 ]
 ```
+
+> Resposta completa em [`docs/evidencias/saidas_reais.md`](docs/evidencias/saidas_reais.md).
 
 ---
 
@@ -561,7 +557,7 @@ HTTP/1.1 401 Unauthorized
 
 ### Swagger UI
 
-Disponível em `http://localhost:5000/swagger` — use o botão **Authorize 🔒** para inserir o JWT e testar os endpoints protegidos.
+Disponível em `http://localhost:5050/swagger` — use o botão **Authorize 🔒** para inserir o JWT e testar os endpoints protegidos.
 
 ---
 
@@ -596,5 +592,5 @@ Passed!  - Failed: 0, Passed: 66, Skipped: 0, Total: 66, Duration: 31 ms
 │   ├── Repositories/       # Implementações EF Core dos repositórios
 │   └── Extensions/         # ServiceCollectionExtensions (AddFiapAgroServices)
 ├── FiapAgro.Tests/         # xUnit — testes de domínio
-└── docs/evidencias/        # requests.http + exemplos de resposta
+└── docs/evidencias/        # requests.http · saidas_reais.md
 ```
