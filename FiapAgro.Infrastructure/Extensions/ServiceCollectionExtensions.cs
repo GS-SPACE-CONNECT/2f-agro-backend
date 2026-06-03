@@ -24,6 +24,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPropriedadeRepository, PropriedadeRepositoryEF>();
         services.AddScoped<IAlertaRepository, AlertaRepositoryEF>();
         services.AddScoped<IUsuarioRepository, UsuarioRepositoryEF>();
+        services.AddScoped<ILavouraRepository, LavouraRepositoryEF>();
+        services.AddScoped<IDiagnosticoRepository, DiagnosticoRepositoryEF>();
 
         // Notificador
         services.AddScoped<INotificador, NotificadorConsole>();
