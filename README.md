@@ -1,16 +1,19 @@
 # FiapAgro — Backend
 
 > API REST .NET 8 para monitoramento agroclimático — FIAP Global Solution 2026.1
+> Matéria: **C# .NET** (100 pts) · FIAP 3ES · GS 2026.1
 
 [![build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/GS-SPACE-CONNECT/2f-agro-backend/actions)
 [![Hub](https://img.shields.io/badge/hub-2f--agro-success)](https://github.com/GS-SPACE-CONNECT/2f-agro)
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com)
 
+> ℹ️ **SOA migrou (28/05).** A matéria SOA virou implementação Java própria — agora no repo [2f-agro-soa](https://github.com/GS-SPACE-CONNECT/2f-agro-soa) (Spring Boot REST + SOAP). Este repo é só C#.
+
 ---
 
 ## Sobre o Projeto
 
-O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimáticos (pragas, secas, geadas, enchentes e erosão) para propriedades rurais cadastradas. Desenvolvido em C# .NET 8, atende às rubricas de **C# (100 pts)** e **SOA** da FIAP 3ES — GS 2026.1.
+O **FiapAgro Backend** é uma Web API que detecta e registra alertas agroclimáticos (pragas, secas, geadas, enchentes e erosão) para propriedades rurais cadastradas. Desenvolvido em C# .NET 8, atende à rubrica de **C# (100 pts)** da FIAP 3ES — GS 2026.1.
 
 ## Integrantes
 
