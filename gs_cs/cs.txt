@@ -1,0 +1,24 @@
+Entrega pelo Teams até 09/06
+Requisitos técnicos
+Criação de projeto no .NET alinhado ao tema da Global Solution — Console/Windows Forms/WPF ou API Core.
+Opcional: conectar com banco de dados ou manipulação de arquivos.
+Elementos obrigatórios
+• Modelagem de Domínio & POO (20 pontos)
+Classes Públicas, Estáticas, Privadas, Herança e Polimorfismo aplicados às entidades do desafio (ex.: Satélites, Sensores, Alertas).
+• Abstração e Interfaces (20 pontos)
+Classes Abstratas onde faz sentido conceitual; Interfaces e Injeção de Dependência para garantir testabilidade e desacoplamento.
+• Lógica de Fluxo, Métodos e Datas (15 pontos)
+Modularização em Métodos/Funções; estruturas de controle e manipulação precisa de DateTime para histórico de dados.
+
+
+Entrega pelo Teams
+Requisitos técnicos (continuação)
+• Tratamento de Exceções (10 pontos)
+Captura de erros específicos. Sistemas críticos espaciais não podem quebrar abruptamente.
+• Estruturas Auxiliares — Structs/Partial (5 pontos)
+Uso adequado de Structs e classes Partial para organizar o código.
+• Organização (30 pontos)
+Estrutura de pastas e nomenclatura de variáveis, métodos e classes (-5)
+README com motivação do projeto e como se integra (-10)
+Diagrama de fluxos (-5)
+Obrigatório: evidências de execução; sem evidências (-10)
