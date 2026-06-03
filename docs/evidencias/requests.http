@@ -2,7 +2,7 @@
 # Ferramenta: VS Code REST Client (extensão humao.rest-client)
 # Como usar: abra este arquivo no VS Code e clique em "Send Request" em cada bloco
 
-@baseUrl = http://localhost:5000
+@baseUrl = http://localhost:5050
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. AUTH — Registrar usuário
@@ -48,8 +48,8 @@ Content-Type: application/json
 # ─────────────────────────────────────────────────────────────────────────────
 # IMPORTANTE: Cole o token retornado no login abaixo
 # ─────────────────────────────────────────────────────────────────────────────
-@token = SEU_TOKEN_JWT_AQUI
-@usuarioId = SEU_USUARIO_ID_AQUI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxOGUwMTcwMy1mNDhiLTQ5NjctOGUyOC0yYmMwN2IxMTM4YzMiLCJlbWFpbCI6ImJydW5vQGZpYXBhZ3JvLmNvbSIsIm5hbWUiOiJCcnVubyBMZcOjbyIsImp0aSI6IjI2NGU3NWViLTc0NDAtNDQzNS1hNjA0LTcyMjQxNzc5ZTE0ZiIsImV4cCI6MTc4MDQ5MzExMiwiaXNzIjoiRmlhcEFncm8uQXBpIiwiYXVkIjoiRmlhcEFncm8uQ2xpZW50cyJ9.ULzk8gpp984UR8rDGEc7-aU0khtdx_uYrVF_9XcWQaM
+@usuarioId = 18e01703-f48b-4967-8e28-2bc07b1138c3
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. PROPRIEDADES — Criar
@@ -229,5 +229,10 @@ Content-Type: application/json
   "senha": "SenhaErrada!"
 }
 
-### Resposta esperada: 401 Unauthorized
-# "E-mail ou senha inválidos."
+### Resposta esperada: 401 Unauthorized — ProblemDetails
+# {
+#   "status": 401,
+#   "title": "Não autorizado",
+#   "detail": "E-mail ou senha inválidos.",
+#   "traceId": "00-..."
+# }
