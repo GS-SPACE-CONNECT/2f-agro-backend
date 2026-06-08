@@ -39,6 +39,22 @@ public abstract class Alerta
     /// <summary>Formata a data de criação no padrão brasileiro.</summary>
     public static string FormatarData(DateTime data) => data.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
 
+    /// <summary>Calcula o tempo decorrido desde a criação do alerta até agora (UTC).</summary>
+    public TimeSpan TempoDecorrido() => DateTime.UtcNow - CriadoEm;
+
+    /// <summary>
+    /// Verifica se o alerta ainda é recente dentro de uma janela de tempo.
+    /// Útil para dashboards que priorizam alertas ativos.
+    /// </summary>
+    public bool EstaRecente(TimeSpan janela) => TempoDecorrido() <= janela;
+
+    /// <summary>
+    /// Verifica se o alerta foi criado dentro do período informado (inclusive).
+    /// Usado para consultas de histórico por intervalo de datas.
+    /// </summary>
+    public bool FoiCriadoEntre(DateTime inicio, DateTime fim) =>
+        CriadoEm >= inicio && CriadoEm <= fim;
+
     public override string ToString() =>
         $"[{GetType().Name}] {FormatarData(CriadoEm)} — Severidade: {CalcularSeveridade()} — Probabilidade: {Probabilidade:P0}";
 }

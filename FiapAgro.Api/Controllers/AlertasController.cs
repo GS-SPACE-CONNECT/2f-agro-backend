@@ -37,6 +37,26 @@ public class AlertasController : ControllerBase
         return Ok(alertas.Select(AlertaResponse.FromEntity));
     }
 
+    /// <summary>
+    /// Retorna o histórico de alertas de uma propriedade dentro de um período.
+    /// Datas no formato ISO 8601 (ex.: 2026-01-01T00:00:00Z).
+    /// </summary>
+    [HttpGet("propriedade/{propriedadeId:guid}/historico")]
+    public async Task<IActionResult> Historico(
+        Guid propriedadeId,
+        [FromQuery] DateTime inicio,
+        [FromQuery] DateTime fim)
+    {
+        if (fim < inicio)
+            throw new RegraDeNegocioException("A data final não pode ser anterior à data inicial.");
+
+        var inicioUtc = inicio.Kind == DateTimeKind.Utc ? inicio : inicio.ToUniversalTime();
+        var fimUtc = fim.Kind == DateTimeKind.Utc ? fim : fim.ToUniversalTime();
+
+        var alertas = await _repo.ListarPorPeriodoAsync(propriedadeId, inicioUtc, fimUtc);
+        return Ok(alertas.Select(AlertaResponse.FromEntity));
+    }
+
     /// <summary>Retorna um alerta pelo Id.</summary>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> BuscarPorId(Guid id)

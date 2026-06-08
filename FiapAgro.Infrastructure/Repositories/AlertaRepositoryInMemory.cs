@@ -21,4 +21,12 @@ public class AlertaRepositoryInMemory : IAlertaRepository
 
     public Task<IEnumerable<Alerta>> ListarRecentesAsync(int quantidade = 20) =>
         Task.FromResult(_store.OrderByDescending(a => a.CriadoEm).Take(quantidade));
+
+    public Task<IEnumerable<Alerta>> ListarPorPeriodoAsync(
+        Guid propriedadeId, DateTime inicio, DateTime fim) =>
+        Task.FromResult(_store
+            .Where(a => a.PropriedadeId == propriedadeId
+                        && a.CriadoEm >= inicio
+                        && a.CriadoEm <= fim)
+            .OrderByDescending(a => a.CriadoEm));
 }

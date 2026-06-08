@@ -64,20 +64,20 @@ graph TB
     end
 
     subgraph API["FiapAgro.Api"]
-        CTRL["Controllers\nAuth · Propriedades · Alertas"]
+        CTRL["Controllers\nAuth · Propriedades · Lavouras · Alertas · Diagnósticos"]
         MW["GlobalExceptionHandler\nIExceptionHandler — RFC 7807"]
         JWTMW["JWT Bearer Middleware"]
     end
 
     subgraph DOM["FiapAgro.Domain"]
-        ENT["Entities\nAlerta abstract · Propriedade · Usuario"]
+        ENT["Entities\nAlerta abstract · Propriedade · Lavoura · DiagnosticoPraga · Usuario"]
         IFACE["Interfaces\nIAlertaRepo · IPropriedadeRepo · IUsuarioRepo · IDetector‹T›"]
         EXC["Exceptions\nDomainException → NaoEncontrado · Conflito · RegraDeNegocio"]
         VO["ValueObjects\nCoordenada readonly struct"]
     end
 
     subgraph INF["FiapAgro.Infrastructure"]
-        REPO["Repositories EF Core\nAlerta · Propriedade · Usuario"]
+        REPO["Repositories EF Core\nAlerta · Propriedade · Lavoura · Diagnostico · Usuario"]
         JWTSS["JwtService\nPBKDF2 + HMAC-SHA256"]
         DET["Detectors\nPraga · Seca · Geada · Enchente · Erosao"]
         DB[("PostgreSQL\nfiapagro")]
@@ -256,7 +256,7 @@ erDiagram
 |------|:---:|---|
 | Modelagem de Domínio & POO — herança, polimorfismo, classes públicas/privadas/estáticas | 20 | `Alerta` (abstract) → 5 herdeiros; `CalcularSeveridade()` e `Recomendacao()` sobrescritos; `_totalCriados` (private static) · `TotalCriados` (public static) |
 | Abstração e Interfaces + injeção de dependência | 20 | `IAlertaRepository`, `IPropriedadeRepository`, `IUsuarioRepository`, `IDetector<T>`, `INotificador` — todos Scoped via `AddFiapAgroServices()` |
-| Lógica de Fluxo, Métodos e Datas | 15 | Métodos modulares por detector (`DetectorPraga`, `DetectorSeca` etc.); `DateTime.UtcNow` em `Alerta`; `FormatarData(DateTime)` estático; `Math.Clamp` para probabilidade; `ToString()` sobrescrito |
+| Lógica de Fluxo, Métodos e Datas | 15 | Métodos modulares por detector (`DetectorPraga`, `DetectorSeca` etc.); `DateTime.UtcNow` em `Alerta`; `FormatarData(DateTime)` estático; `TempoDecorrido()` / `EstaRecente()` / `FoiCriadoEntre()` para aritmética temporal; `Lavoura.DiasDesdeUltimaLeitura()` / `RegistrarLeitura()` para histórico de sensores; endpoint `/historico` com filtro por período; `Math.Clamp` para probabilidade |
 | Tratamento de Exceções | 10 | Hierarquia `DomainException` → `GlobalExceptionHandler` (`IExceptionHandler` .NET 8) → RFC 7807 ProblemDetails com `traceId` |
 | Structs + Partial Classes | 5 | `readonly struct Coordenada` (GPS, value-semantics, IEquatable); `partial class Propriedade` (estado / comportamento em arquivos separados) |
 | Organização — estrutura de pastas, nomenclatura, README, diagrama, evidências | 30 | Este arquivo + Mermaid (camadas · classes · fluxo · ER) + [`docs/evidencias/`](docs/evidencias/) |
@@ -289,6 +289,7 @@ erDiagram
 |--------|------|:------:|-----------|
 | `GET` | `/api/alertas/recentes?quantidade=20` | 200 | Últimos N alertas |
 | `GET` | `/api/alertas/propriedade/{id}` | 200 | Alertas de uma propriedade |
+| `GET` | `/api/alertas/propriedade/{id}/historico?inicio=...&fim=...` | 200 / 400 | Histórico por período (ISO 8601 UTC) |
 | `GET` | `/api/alertas/{id}` | 200 / 404 | Alerta por Id |
 | `POST` | `/api/alertas/praga` | 201 | Registra alerta de praga |
 | `POST` | `/api/alertas/seca` | 201 | Registra alerta de seca |
