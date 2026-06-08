@@ -24,7 +24,7 @@ public class AlertaRepositoryInMemory : IAlertaRepository
 
     public Task<IEnumerable<Alerta>> ListarPorPeriodoAsync(
         Guid propriedadeId, DateTime inicio, DateTime fim) =>
-        Task.FromResult(_store
+        Task.FromResult<IEnumerable<Alerta>>(_store
             .Where(a => a.PropriedadeId == propriedadeId
                         && a.CriadoEm >= inicio
                         && a.CriadoEm <= fim)
