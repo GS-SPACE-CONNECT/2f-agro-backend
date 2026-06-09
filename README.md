@@ -7,8 +7,6 @@
 [![Hub](https://img.shields.io/badge/hub-2f--agro-success)](https://github.com/GS-SPACE-CONNECT/2f-agro)
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com)
 
-> ℹ️ **SOA migrou (28/05).** A matéria SOA virou implementação Java própria — agora no repo [2f-agro-soa](https://github.com/GS-SPACE-CONNECT/2f-agro-soa) (Spring Boot REST + SOAP). Este repo é só C#.
-
 ---
 
 ## Sobre o Projeto
