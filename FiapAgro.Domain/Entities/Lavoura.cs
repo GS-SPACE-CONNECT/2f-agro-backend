@@ -44,4 +44,29 @@ public class Lavoura
         Coordenadas = coordenadas;
         CriadoEm = DateTime.UtcNow;
     }
+
+    /// <summary>
+    /// Registra uma nova leitura de NDVI vinda do satélite/sensor,
+    /// atualizando o índice e o timestamp da última leitura.
+    /// </summary>
+    public void RegistrarLeitura(double ndvi)
+    {
+        NdviAtual = Math.Clamp(ndvi, -1.0, 1.0);
+        UltimaLeitura = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Calcula quantos dias se passaram desde a última leitura de sensor.
+    /// Retorna <c>null</c> se nenhuma leitura foi registrada.
+    /// </summary>
+    public int? DiasDesdeUltimaLeitura() =>
+        UltimaLeitura.HasValue
+            ? (int)(DateTime.UtcNow - UltimaLeitura.Value).TotalDays
+            : null;
+
+    /// <summary>
+    /// Indica se a lavoura está com dados desatualizados (sem leitura há mais de N dias).
+    /// </summary>
+    public bool LeituraDesatualizada(int diasLimite = 7) =>
+        DiasDesdeUltimaLeitura() is { } dias && dias > diasLimite;
 }

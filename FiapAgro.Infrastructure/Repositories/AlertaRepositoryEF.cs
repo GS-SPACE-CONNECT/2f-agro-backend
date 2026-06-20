@@ -31,4 +31,13 @@ public class AlertaRepositoryEF : IAlertaRepository
             .OrderByDescending(a => a.CriadoEm)
             .Take(quantidade)
             .ToListAsync();
+
+    public async Task<IEnumerable<Alerta>> ListarPorPeriodoAsync(
+        Guid propriedadeId, DateTime inicio, DateTime fim) =>
+        await _db.Alertas
+            .Where(a => a.PropriedadeId == propriedadeId
+                        && a.CriadoEm >= inicio
+                        && a.CriadoEm <= fim)
+            .OrderByDescending(a => a.CriadoEm)
+            .ToListAsync();
 }
